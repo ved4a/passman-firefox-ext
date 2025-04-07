@@ -3,15 +3,23 @@
     "name": "Crypt Keeper",
     "version": "1.0",
     "description": "Stores your passwords from all webpages you consent to.",
+
+    "icons": {
+        "48": "/browser-icon.svg" 
+    },
+
     "permissions": [
         "activeTab",
-        "tabs",
+        "clipboardWrite",
         "storage"
     ],
+
     "browser_action": {
-        "default_popup": "/popup.html",
-        "default_icon": "/browser-icon.svg"
+        "default_popup": "/pop-up/popup.html",
+        "default_icon": "/browser-icon.svg",
+        "default_title": "Crypt Keeper"
     },
+
     "background": {
         "scripts": ["background.js"]
     }
