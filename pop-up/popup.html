@@ -1,11 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="popup.css">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="top">
+        <!-- search for passwords-->
+        <input
+          type="search"
+          name="search-pw"
+          id="search-pw"
+          placeholder="Search your crypt"
+        />
+
+        <!-- open crypt aka fullscreen pw screen-->
+        <button id="to-fullscreen">Crypt</button>
+
+        <!-- quick add a pw-->
+        <button id="add-pw">+</button>
+      </div>
+
+      <nav class="navbar">
+        <ul class="list">
+            <li id="recent">Recent</li>
+            <li id="current">On this website</li>
+            <li>All Passwords</li>
+            <li>Favorite</li>
+        </ul>
+      </nav>
+
+      <div class="pass"></div>
+
+      <footer>
+        Copyright © Crypt Keeper 
+      </footer>
+    </div>
+  </body>
 </html>
