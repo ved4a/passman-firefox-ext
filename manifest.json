@@ -9,9 +9,9 @@
     },
 
     "permissions": [
-        "activeTab",
         "clipboardWrite",
-        "storage"
+        "storage",
+        "alarms"
     ],
 
     "browser_action": {
