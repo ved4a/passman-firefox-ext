@@ -8,4 +8,14 @@ export async function genSalt(length = 16){
     return btoa(String.fromCharCode(...array));
 }
 
-console.log(genSalt(16))
+export async function hashPW(password, salt){
+    // create instance to encode/map pw to uint8array
+    const enc = new TextEncoder();
+    const keyMaterial = crypto.subtle.importKey(
+        "raw",
+        enc(password),
+        {name: "PBKDF2"},
+        false,
+        [ deriveKey ]
+    )
+}
