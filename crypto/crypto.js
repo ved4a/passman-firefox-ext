@@ -13,9 +13,24 @@ export async function hashPW(password, salt){
     const enc = new TextEncoder();
     const keyMaterial = crypto.subtle.importKey(
         "raw",
-        enc(password),
+        enc.encode(password),
         {name: "PBKDF2"},
         false,
-        [ deriveKey ]
+        [ "deriveKey" ]
+    );
+
+    const derivedKey = await crypto.subtle.deriveKey(
+        {
+            name: "PBKDF2",
+            salt: enc.encode(salt),
+            iterations: 10000, // slow down brute force
+            hash: "SHA-256" // base hash function
+        },
+        keyMaterial,
+        { name: "AES-GCM", length: 256},
+        false,
+        ["encrypt", "decrypt"]
     )
+
+    return derivedKey;
 }
