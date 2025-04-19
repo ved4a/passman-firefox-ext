@@ -1,5 +1,5 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "Crypt Keeper",
     "version": "1.0",
     "description": "Stores your passwords from all webpages you consent to.",
@@ -14,13 +14,13 @@
         "alarms"
     ],
 
-    "browser_action": {
+    "action": {
         "default_popup": "/pop-up/popup.html",
         "default_icon": "/icons/browser-icon.svg",
         "default_title": "Crypt Keeper"
     },
 
     "background": {
-        "scripts": ["background.js"]
+        "service_worker": "background.js"
     }
 }
