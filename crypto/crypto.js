@@ -8,6 +8,8 @@ export async function genSalt(length = 16){
     return btoa(String.fromCharCode(...array));
 }
 
+// turn master pw & salt into usable AES key
+// everytime user logs in, same key generated w/o storing raw pw
 export async function hashPW(password, salt){
     // create instance to encode/map pw to uint8array
     const enc = new TextEncoder();
@@ -31,6 +33,24 @@ export async function hashPW(password, salt){
         false,
         ["encrypt", "decrypt"]
     )
-
     return derivedKey;
+}
+
+export async function encryptData(data, key){
+    // gen random init vector: 12 bytes
+    const init_v = crypto.getRandomValues(new Uint8Array(12));
+    const encoded = new TextEncoder().encode(data);
+
+    // encrypt w/ AES-GCM
+    const ciphertext = await crypto.subtle.encrypt(
+        {name : "AES-GCM", init_v},
+        key,
+        encoded
+    );
+
+    // init vector and encrypted data encoded in base64 to store
+    return {
+        iv: btoa(String.fromCharCode(...iv)),
+        data: btoa(String.fromCharCode(...new Uint8Array(ciphertext)))
+    };
 }
