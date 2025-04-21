@@ -1,22 +1,20 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Crypt Keeper",
   "version": "1.0",
   "description": "Stores your passwords from all webpages you consent to.",
 
   "icons": {
-    "48": "/icons/browser-icon.svg"
+    "48": "icons/browser-icon.svg"
   },
 
-  "permissions": ["<all_urls>", "clipboardWrite", "storage", "alarms"],
+  "permissions": ["storage", "clipboardWrite", "alarms"],
 
-  "browser_action": {
-    "default_popup": "/pop-up/popup.html",
-    "default_icon": "/icons/browser-icon.svg",
+  "host_permissions": ["<all_urls>"],
+
+  "action": {
+    "default_popup": "pop-up/popup.html",
+    "default_icon": "icons/browser-icon.svg",
     "default_title": "Crypt Keeper"
-  },
-
-  "background": {
-    "scripts": ["background.js"]
   }
 }
