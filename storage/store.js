@@ -12,3 +12,9 @@ export async function getFromStorage(key){
     const result = await browser.storage.local.get(key);
     return result[key];
 }
+
+// use case:
+// reset vault, remove expired data, clear sensitive data
+export async function removeFromStorage(key){
+    await browser.storage.local.remove(key);
+}
