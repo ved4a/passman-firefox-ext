@@ -3,40 +3,45 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="popup.css" />
+    <title>Crypt Keeper</title>
   </head>
   <body>
-    <div class="wrapper">
-      <div class="top">
-        <!-- search for passwords-->
-        <input
-          type="search"
-          name="search-pw"
-          id="search-pw"
-          placeholder="Search your crypt"
-        />
+    <div id="app">
+      <!-- Set Master Password -->
+      <div id="setup" class="ext-popup">
+        <h3>Set Vault Password</h3>
 
-        <!-- open crypt aka fullscreen pw screen-->
-        <button class="to-fullscreen">Crypt</button>
+        <div class="pw-container">
+          <input type="password" class="signup-form" id="newPassword" placeholder="Enter your password" />
 
-        <!-- quick add a pw-->
-        <button class="add-pw">+</button>
+          <!-- <img class="eyes-open" onclick="" width="25" src="/icons/eye-show.svg"/> -->
+        </div>
+
+        <div class="pw-container">
+          <input type="password" class="signup-form" id="confirmPassword" placeholder="Confirm your password" />
+
+          <!-- <img class="eyes-open" onclick="toggleVisibility()" width="25" src="/icons/eye-show.svg"/> -->
+        </div>
+
+        <button id="setPasswordBtn">Set Password</button>
       </div>
 
-      <nav class="navbar">
-        <ul class="list">
-            <li class="recent">Recent</li>
-            <li class="current">On this website</li>
-            <li>All Passwords</li>
-            <li>Favorite</li>
-        </ul>
-      </nav>
+      <!-- Login Section -->
+      <div id="login" class="ext-popup">
+        <h3>Enter Vault Password</h3>
+        <input type="password" id="loginPassword" placeholder="Enter your password" />
+        <button id="loginBtn">Login</button>
+      </div>
 
-      <div class="passwords"></div>
-
-      <footer>
-        Copyright © Crypt Keeper 
-      </footer>
+      <!-- Vault (Once Logged In) -->
+      <div id="vault" class="ext-popup">
+        <h3>Vault (Unlocked)</h3>
+        <input type="text" id="searchInput" placeholder="Search passwords" />
+        <div id="passwordsList"></div>
+        <button id="logoutBtn">Lock Vault</button>
+      </div>
     </div>
-    <script src="popup.js"></script>
+
+    <script type="module" src="popup.js"></script>
   </body>
 </html>
