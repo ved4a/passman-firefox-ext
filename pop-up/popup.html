@@ -8,33 +8,29 @@
   <body>
     <div id="app">
       <!-- Set Master Password -->
-      <div id="setup" class="ext-popup">
+      <div id="setup" class="ext-popup hidden">
         <h3>Set Vault Password</h3>
 
         <div class="pw-container">
           <input type="password" class="signup-form" id="newPassword" placeholder="Enter your password" />
-
-          <!-- <img class="eyes-open" onclick="" width="25" src="/icons/eye-show.svg"/> -->
         </div>
 
         <div class="pw-container">
           <input type="password" class="signup-form" id="confirmPassword" placeholder="Confirm your password" />
-
-          <!-- <img class="eyes-open" onclick="toggleVisibility()" width="25" src="/icons/eye-show.svg"/> -->
         </div>
 
         <button id="setPasswordBtn">Set Password</button>
       </div>
 
       <!-- Login Section -->
-      <div id="login" class="ext-popup">
+      <div id="login" class="ext-popup hidden">
         <h3>Enter Vault Password</h3>
         <input type="password" id="loginPassword" placeholder="Enter your password" />
         <button id="loginBtn">Login</button>
       </div>
 
       <!-- Vault (Once Logged In) -->
-      <div id="vault" class="ext-popup">
+      <div id="vault" class="ext-popup hidden">
         <h3>Vault (Unlocked)</h3>
         <input type="text" id="searchInput" placeholder="Search passwords" />
         <div id="passwordsList"></div>
@@ -42,6 +38,6 @@
       </div>
     </div>
 
-    <script type="module" src="popup.js"></script>
+    <script type="module" src="/pop-up/popup.js"></script>
   </body>
 </html>
