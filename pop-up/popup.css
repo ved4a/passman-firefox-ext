@@ -19,12 +19,8 @@ body {
   min-height: 400px;
 }
 
-.ext-popup {
+.hidden {
   display: none;
-}
-
-.visible {
-  display: inherit;
 }
 
   /* h3 {
@@ -70,11 +66,4 @@ body {
     padding: 5px;
     border-bottom: 1px solid #ddd;
   }
-  
-  .popup-section {
-    display: none;
-  }
-  
-  .popup-section.visible {
-    display: block;
   } */
