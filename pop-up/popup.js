@@ -34,14 +34,22 @@ const init = async () => {
       const newPassword = document.getElementById("newPassword").value;
       const confirmPassword = document.getElementById("confirmPassword").value;
 
+      if (newPassword.length < 6){
+        setupError.textContent = "Password must be at least 6 characters.";
+        return;
+      }
+
       if (newPassword == confirmPassword){
         // clear the error container (if error exists)
         setupError.textContent = "";
 
         // do NOT store actual pw! only store hashed pw
-        const hashedMasterPassword = await hashPW(confirmPassword, newSalt);
+        const derivedKey = await hashPW(confirmPassword, newSalt);
+        const rawKey = await crypto.subtle.exportKey("raw", derivedKey);
+        const encodedKey = btoa(String.fromCharCode(...new Uint8Array(rawKey)));
+
         await saveToStorage("salt", newSalt);
-        await saveToStorage("masterPassword", hashedMasterPassword);
+        await saveToStorage("masterPassword", encodedKey);
 
         // now can show the vault!
         setupDiv.classList.add("hidden");
@@ -49,10 +57,9 @@ const init = async () => {
       } else {
         // show an error message
         setupError.textContent = "Error: Passwords don't match!";
+        return;
       }
     } )
-
-
   } else {
     loginDiv.classList.remove('hidden');
 
@@ -60,9 +67,11 @@ const init = async () => {
       const enteredPW = document.getElementById("loginPassword").value;
       const storedHashPassword = await getFromStorage("masterPassword");
 
-      const hashedEnteredPW = await hashPW(enteredPW, salt);
+      const derivedKey = await hashPW(enteredPW, salt);
+      const rawKey = await crypto.subtle.exportKey("raw", derivedKey);
+      const encodedKey = btoa(String.fromCharCode(...new Uint8Array(rawKey)));
 
-      if (hashedEnteredPW == storedHashPassword){
+      if (encodedKey == storedHashPassword){
         loginDiv.classList.add("hidden");
         vaultDiv.classList.remove("hidden");
       } else {
