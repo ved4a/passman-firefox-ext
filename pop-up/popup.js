@@ -6,7 +6,7 @@ import { startAutoLock } from '../utils/timer.js';
 
 const setupDiv = document.getElementById('setup');
 const loginDiv = document.getElementById('login');
-const errorContainer = document.getElementById("errorContainer");
+const errorContainer = document.getElementsByClassName("error-message");
 const vaultDiv = document.getElementById('vault');
 const passwordsListDiv = document.getElementById('passwordsList');
 const searchInput = document.getElementById('searchInput');
@@ -52,6 +52,19 @@ const init = async () => {
 
   } else {
     loginDiv.classList.remove('hidden');
+    
+    const enteredPW = document.getElementById("loginPassword").value;
+    const storedHashPassword = await getFromStorage("masterPassword");
+
+    const hashedEnteredPW = await hashPW(enteredPW, salt);
+
+    if (hashedEnteredPW == storedHashPassword){
+      loginDiv.classList.add("hidden");
+      vaultDiv.classList.remove("hidden");
+    } else {
+      errorContainer.textContent = "Incorrect password.";
+    }
+
   }
 
   // if NO salt:
