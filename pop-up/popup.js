@@ -22,7 +22,7 @@ const init = async () => {
     setupDiv.classList.remove('hidden');
 
     // create salt
-    let salt = genSalt();
+    let newSalt = genSalt();
 
     document.getElementById("setPasswordBtn").addEventListener("click", function() {
       const newPassword = document.getElementById("newPassword").value;
@@ -34,7 +34,8 @@ const init = async () => {
 
         // do NOT store actual pw! only store hashed pw
         let hashedMasterPassword = hashPW(confirmPassword, salt);
-        saveToStorage(salt, hashedMasterPassword);
+        saveToStorage("salt", newSalt);
+        saveToStorage("masterPassword", hashedMasterPassword);
 
         // now can show the vault!
         setupDiv.classList.add("hidden");
@@ -43,7 +44,6 @@ const init = async () => {
       } else {
         // show an error message
         errorContainer.textContent = "Error: Passwords don't match!";
-
       }
     } )
 
