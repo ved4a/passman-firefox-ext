@@ -22,9 +22,12 @@ const init = async () => {
     setupDiv.classList.remove('hidden');
 
     // create salt
-    let newSalt = genSalt();
+    let newSalt = await genSalt();
 
-    document.getElementById("setPasswordBtn").addEventListener("click", function() {
+    // async function to:
+    // create salt, store salt
+    // create hashedPW, store hashedPW
+    document.getElementById("setPasswordBtn").addEventListener("click", async function() {
       const newPassword = document.getElementById("newPassword").value;
       const confirmPassword = document.getElementById("confirmPassword").value;
 
@@ -33,7 +36,7 @@ const init = async () => {
         errorContainer.textContent = "";
 
         // do NOT store actual pw! only store hashed pw
-        let hashedMasterPassword = hashPW(confirmPassword, salt);
+        const hashedMasterPassword = await hashPW(confirmPassword, salt);
         saveToStorage("salt", newSalt);
         saveToStorage("masterPassword", hashedMasterPassword);
 
