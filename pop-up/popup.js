@@ -6,7 +6,10 @@ import { startAutoLock } from '../utils/timer.js';
 
 const setupDiv = document.getElementById('setup');
 const loginDiv = document.getElementById('login');
-const errorContainer = document.getElementsByClassName("error-message");
+
+const setupError = document.getElementById("setupErrorContainer");
+const loginError = document.getElementById("loginErrorContainer");
+
 const vaultDiv = document.getElementById('vault');
 const passwordsListDiv = document.getElementById('passwordsList');
 const searchInput = document.getElementById('searchInput');
@@ -33,7 +36,7 @@ const init = async () => {
 
       if (newPassword == confirmPassword){
         // clear the error container (if error exists)
-        errorContainer.textContent = "";
+        setupError.textContent = "";
 
         // do NOT store actual pw! only store hashed pw
         const hashedMasterPassword = await hashPW(confirmPassword, newSalt);
@@ -45,38 +48,28 @@ const init = async () => {
         vaultDiv.classList.remove("hidden");
       } else {
         // show an error message
-        errorContainer.textContent = "Error: Passwords don't match!";
+        setupError.textContent = "Error: Passwords don't match!";
       }
     } )
 
 
   } else {
     loginDiv.classList.remove('hidden');
-    
-    const enteredPW = document.getElementById("loginPassword").value;
-    const storedHashPassword = await getFromStorage("masterPassword");
 
-    const hashedEnteredPW = await hashPW(enteredPW, salt);
+    document.getElementById("loginBtn").addEventListener("click", async function () {
+      const enteredPW = document.getElementById("loginPassword").value;
+      const storedHashPassword = await getFromStorage("masterPassword");
 
-    if (hashedEnteredPW == storedHashPassword){
-      loginDiv.classList.add("hidden");
-      vaultDiv.classList.remove("hidden");
-    } else {
-      errorContainer.textContent = "Incorrect password.";
-    }
+      const hashedEnteredPW = await hashPW(enteredPW, salt);
 
+      if (hashedEnteredPW == storedHashPassword){
+        loginDiv.classList.add("hidden");
+        vaultDiv.classList.remove("hidden");
+      } else {
+        loginError.textContent = "Incorrect password.";
+      }
+    })
   }
-
-  // if NO salt:
-  // let user create master pw, hash, and store
-  // generate salt for hashing
-
-
-  // if yes salt:
-  // let user log in with master pw
-  // compute the hashed pw with the one in storage
-  // yes? go to vault. no? 3 tries
-
 };
 
 document.addEventListener('DOMContentLoaded', init);
