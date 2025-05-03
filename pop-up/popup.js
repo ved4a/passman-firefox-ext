@@ -36,14 +36,13 @@ const init = async () => {
         errorContainer.textContent = "";
 
         // do NOT store actual pw! only store hashed pw
-        const hashedMasterPassword = await hashPW(confirmPassword, salt);
+        const hashedMasterPassword = await hashPW(confirmPassword, newSalt);
         await saveToStorage("salt", newSalt);
         await saveToStorage("masterPassword", hashedMasterPassword);
 
         // now can show the vault!
         setupDiv.classList.add("hidden");
         vaultDiv.classList.remove("hidden");
-
       } else {
         // show an error message
         errorContainer.textContent = "Error: Passwords don't match!";
