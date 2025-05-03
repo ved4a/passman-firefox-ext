@@ -37,8 +37,8 @@ const init = async () => {
 
         // do NOT store actual pw! only store hashed pw
         const hashedMasterPassword = await hashPW(confirmPassword, salt);
-        saveToStorage("salt", newSalt);
-        saveToStorage("masterPassword", hashedMasterPassword);
+        await saveToStorage("salt", newSalt);
+        await saveToStorage("masterPassword", hashedMasterPassword);
 
         // now can show the vault!
         setupDiv.classList.add("hidden");
