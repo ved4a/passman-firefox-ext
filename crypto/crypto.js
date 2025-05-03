@@ -13,7 +13,7 @@ export async function genSalt(length = 16){
 export async function hashPW(password, salt){
     // create instance to encode/map pw to uint8array
     const enc = new TextEncoder();
-    const keyMaterial = crypto.subtle.importKey(
+    const keyMaterial = await crypto.subtle.importKey(
         "raw",
         enc.encode(password),
         {name: "PBKDF2"},
@@ -43,7 +43,7 @@ export async function encryptData(data, key){
 
     // encrypt w/ AES-GCM
     const ciphertext = await crypto.subtle.encrypt(
-        {name : "AES-GCM", init_v},
+        {name : "AES-GCM", iv: init_v},
         key,
         encoded
     );
@@ -58,11 +58,11 @@ export async function encryptData(data, key){
 export async function decryptData(encrypted, key){
     // map each Base64 character in init_v, data back to elements of Uint8Arrays
     const init_v = new Uint8Array(atob(encrypted.init_v).split('').map(c => c.charCodeAt(0)));
-    const data = new Uint8Array(atob(encrypted.data).split('').map(c => charCodeAt(0)));
+    const data = new Uint8Array(atob(encrypted.data).split('').map(c => c.charCodeAt(0)));
 
     // decrypts using AES-GCM
     const decrypted = await crypto.subtle.decrypt(
-        {name: "AES-GCM", init_v},
+        {name: "AES-GCM", iv: init_v},
         key,
         data
     );
