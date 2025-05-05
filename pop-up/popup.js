@@ -14,6 +14,9 @@ const vaultDiv = document.getElementById('vault');
 const passwordsListDiv = document.getElementById('passwordsList');
 const searchInput = document.getElementById('searchInput');
 
+let derivedKey;
+let allEntries = [];
+
 const init = async () => {
   console.log('Init function started!');
 
@@ -60,7 +63,7 @@ const init = async () => {
         return;
       }
     } )
-    
+
   } else {
     loginDiv.classList.remove('hidden');
 
@@ -75,11 +78,19 @@ const init = async () => {
       if (encodedKey == storedHashPassword){
         loginDiv.classList.add("hidden");
         vaultDiv.classList.remove("hidden");
+
+        startAutoLock(logout);
       } else {
         loginError.textContent = "Incorrect password.";
       }
     })
   }
 };
+
+function logout(){
+  vaultDiv.classList.add("hidden");
+  loginDiv.classList.remove("hidden");
+  document.getElementById("loginPassword").value = "";
+}
 
 document.addEventListener('DOMContentLoaded', init);
