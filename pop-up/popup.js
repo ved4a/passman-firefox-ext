@@ -47,7 +47,7 @@ const init = async () => {
         setupError.textContent = "";
 
         // do NOT store actual pw! only store hashed pw
-        const derivedKey = await hashPW(confirmPassword, newSalt);
+        derivedKey = await hashPW(confirmPassword, newSalt);
         const rawKey = await crypto.subtle.exportKey("raw", derivedKey);
         const encodedKey = btoa(String.fromCharCode(...new Uint8Array(rawKey)));
 
@@ -71,7 +71,7 @@ const init = async () => {
       const enteredPW = document.getElementById("loginPassword").value;
       const storedHashPassword = await getFromStorage("masterPassword");
 
-      const derivedKey = await hashPW(enteredPW, salt);
+      derivedKey = await hashPW(enteredPW, salt);
       const rawKey = await crypto.subtle.exportKey("raw", derivedKey);
       const encodedKey = btoa(String.fromCharCode(...new Uint8Array(rawKey)));
 
