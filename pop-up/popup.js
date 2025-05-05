@@ -18,8 +18,8 @@ const init = async () => {
   console.log('Init function started!');
 
   // check if salt is in storage -> means there exists a vault
-  // ...associated with the user
   const salt = await getFromStorage("salt");
+
   if (!salt){
     // show initial set-up
     setupDiv.classList.remove('hidden');
@@ -60,6 +60,7 @@ const init = async () => {
         return;
       }
     } )
+    
   } else {
     loginDiv.classList.remove('hidden');
 

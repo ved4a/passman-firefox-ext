@@ -23,6 +23,14 @@ body {
   display: none;
 }
 
+.error-message {
+  height: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  color: red;
+  font-size: 14px;
+}
+
   /* h3 {
     margin-top: 0;
     font-size: 18px;
