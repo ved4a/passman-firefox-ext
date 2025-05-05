@@ -1,6 +1,6 @@
 "use strict";
 
-import { genSalt, hashPW } from '../crypto/crypto.js';
+import { genSalt, hashPW, encryptData, decryptData } from '../crypto/crypto.js';
 import { saveToStorage, getFromStorage } from '../storage/store.js';
 import { startAutoLock } from '../utils/timer.js';
 
@@ -79,7 +79,12 @@ const init = async () => {
         loginDiv.classList.add("hidden");
         vaultDiv.classList.remove("hidden");
 
+        // begin 10-min auto-lock timer
         startAutoLock(logout);
+
+        // render all passwords
+        allEntries = await getFromStorage("vaultEntries") || [];
+        renderPasswords(allEntries);
       } else {
         loginError.textContent = "Incorrect password.";
       }
@@ -91,6 +96,36 @@ function logout(){
   vaultDiv.classList.add("hidden");
   loginDiv.classList.remove("hidden");
   document.getElementById("loginPassword").value = "";
+}
+
+function renderPasswords(entries){
+  const container = document.getElementById("passwordsList");
+  container.innerHTML = "";
+
+  entries.forEach((entry, index) => {
+    const item = document.createElement("div");
+    item.classList.add("vault-item");
+
+    item.innerHTML = `
+      <strong>${entry.website}</strong><br/>
+      User: ${entry.username}<br/>
+      Encrypted PW: <code>${entry.password.data}</code><br/>
+      <button data-index="${index}" class="decryptBtn">Decrypt</button>
+      <span class="decrypted-pw" id="decrypted-${index}"></span>
+    `;
+
+    container.appendChild(item);
+  });
+
+  container.querySelectorAll(".decryptBtn").forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+      resetAutoLock(logout);
+
+      const idx = e.target.dataset.index;
+      const decrypted = await decryptData(allEntries[idx].password, derivedKey);
+      document.getElementById(`decrypted-${idx}`).textContent = `Decrypted: ${decrypted}`;
+    });
+  });
 }
 
 document.addEventListener('DOMContentLoaded', init);
