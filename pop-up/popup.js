@@ -125,6 +125,8 @@ function logout(){
   document.getElementById("loginPassword").value = "";
 }
 
+document.getElementById("logoutBtn").addEventListener("click", logout);
+
 function renderPasswords(entries){
   const container = document.getElementById("passwordsList");
   container.innerHTML = "";
