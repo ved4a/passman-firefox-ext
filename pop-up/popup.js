@@ -2,7 +2,7 @@
 
 import { genSalt, hashPW, encryptData, decryptData } from '../crypto/crypto.js';
 import { saveToStorage, getFromStorage } from '../storage/store.js';
-import { startAutoLock } from '../utils/timer.js';
+import { startAutoLock, resetAutoLock } from '../utils/timer.js';
 
 const setupDiv = document.getElementById('setup');
 const loginDiv = document.getElementById('login');
