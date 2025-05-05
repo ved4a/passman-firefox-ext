@@ -106,11 +106,15 @@ const init = async () => {
         });
 
         // add search functionality
-        searchInput.addEventListener("input", () => {
-          const term = searchInput.value.toLowerCase();
-          const filtered = allEntries.filter(entry => entry.website.toLowerCase().includes(term));
-          renderPasswords(filtered);
-        });        
+        searchInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            const term = searchInput.value.toLowerCase();
+            const filtered = allEntries.filter(entry =>
+              entry.website.toLowerCase().includes(term)
+            );
+            renderPasswords(filtered);
+          }
+        });              
 
       } else {
         loginError.textContent = "Incorrect password.";
