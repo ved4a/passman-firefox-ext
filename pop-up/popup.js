@@ -85,6 +85,26 @@ const init = async () => {
         // render all passwords
         allEntries = await getFromStorage("vaultEntries") || [];
         renderPasswords(allEntries);
+
+        // add password functionality
+        document.getElementById("addPasswordBtn").addEventListener("click", async () => {
+          resetAutoLock(logout);
+        
+          const website = document.getElementById("websiteInput").value.trim();
+          const username = document.getElementById("usernameInput").value.trim();
+          const password = document.getElementById("passwordInput").value;
+        
+          if (!website || !username || !password) return;
+        
+          const encrypted = await encryptData(password, derivedKey);
+          const newEntry = { website, username, password: encrypted };
+        
+          allEntries.push(newEntry);
+          await saveToStorage("vaultEntries", allEntries);
+        
+          renderPasswords(allEntries);
+        });
+
       } else {
         loginError.textContent = "Incorrect password.";
       }
