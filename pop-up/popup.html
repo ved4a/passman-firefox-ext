@@ -34,7 +34,16 @@
       <!-- Vault (Once Logged In) -->
       <div id="vault" class="ext-popup hidden">
         <h3>Vault (Unlocked)</h3>
-        <input type="text" id="searchInput" placeholder="Search passwords" />
+
+        <div class="add-entry">
+          <input type="text" id="websiteInput" placeholder="Website">
+          <input type="text" id="usernameInput" placeholder="Username">
+          <input type="password" id="passwordInput" placeholder="Password">
+        </div>
+        <button id="addPwd">Add Password</button>
+
+        <input type="search" id="searchInput" placeholder="Search by wesbite..." />
+
         <div id="passwordsList"></div>
         <button id="logoutBtn">Lock Vault</button>
       </div>
