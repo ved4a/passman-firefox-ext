@@ -12,6 +12,7 @@ Crypt Keeper is a lightweight and secure password manager built as a **Firefox b
 - Auto-lock timer for added security
 - Search and filter saved credentials
 - Click-to-decrypt password visibility
+- XSS attack-proof vault
 
 ---
 
