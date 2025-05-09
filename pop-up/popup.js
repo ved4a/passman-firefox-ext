@@ -118,4 +118,50 @@ async function loginWithPassword(salt) {
   }
 }
 
+// Vault initialization: UI Rendering, password lists, etc
+async function initializeVault() {
+  vaultDiv.classList.remove("hidden");
+  startAutoLock(logout);
+
+  allEntries = await getFromStorage("vaultEntries") || [];
+  renderPasswords(allEntries);
+
+  document.getElementById("addPwd").addEventListener("click", async () => {
+    resetAutoLock(logout);
+
+    const website = document.getElementById("websiteInput").value.trim();
+    const username = document.getElementById("usernameInput").value.trim();
+    const password = document.getElementById("passwordInput").value;
+
+    if (!website || !username || !password) return;
+
+    const encrypted = await encryptData(password, derivedKey);
+    const newEntry = { website, username, password: encrypted };
+
+    allEntries.push(newEntry);
+    await saveToStorage("vaultEntries", allEntries);
+    renderPasswords(allEntries);
+
+    document.getElementById("websiteInput").value = "";
+    document.getElementById("usernameInput").value = "";
+    document.getElementById("passwordInput").value = "";
+
+    const msg = document.createElement("div");
+    msg.textContent = "Password added!";
+    msg.classList.add("add-confirmation");
+    vaultDiv.insertBefore(msg, passwordsListDiv);
+    setTimeout(() => msg.remove(), 1500);
+  });
+
+  searchInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      const term = searchInput.value.toLowerCase();
+      const filtered = allEntries.filter(entry =>
+        entry.website.toLowerCase().includes(term)
+      );
+      renderPasswords(filtered);
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', init);
