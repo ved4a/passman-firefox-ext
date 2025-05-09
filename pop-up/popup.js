@@ -24,46 +24,8 @@ const init = async () => {
   const salt = await getFromStorage("salt");
 
   if (!salt){
-    // show initial set-up
     setupDiv.classList.remove('hidden');
-
-    // create salt
-    let newSalt = await genSalt();
-
-    // async function to:
-    // create salt, store salt
-    // create hashedPW, store hashedPW
-    document.getElementById("setPasswordBtn").addEventListener("click", async function() {
-      const newPassword = document.getElementById("newPassword").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
-
-      if (newPassword.length < 6){
-        setupError.textContent = "Password must be at least 6 characters.";
-        return;
-      }
-
-      if (newPassword == confirmPassword){
-        // clear the error container (if error exists)
-        setupError.textContent = "";
-
-        // do NOT store actual pw! only store hashed pw
-        derivedKey = await hashPW(confirmPassword, newSalt);
-        const rawKey = await crypto.subtle.exportKey("raw", derivedKey);
-        const encodedKey = btoa(String.fromCharCode(...new Uint8Array(rawKey)));
-
-        await saveToStorage("salt", newSalt);
-        await saveToStorage("masterPassword", encodedKey);
-
-        // now can show the vault!
-        setupDiv.classList.add("hidden");
-        vaultDiv.classList.remove("hidden");
-      } else {
-        // show an error message
-        setupError.textContent = "Error: Passwords don't match!";
-        return;
-      }
-    } )
-
+    document.getElementById("setPasswordBtn").addEventListener("click", () => setupMasterPassword());
   } else {
     loginDiv.classList.remove('hidden');
 
@@ -87,7 +49,7 @@ const init = async () => {
         renderPasswords(allEntries);
 
         // add password functionality
-        document.getElementById("addPasswordBtn").addEventListener("click", async () => {
+        document.getElementById("addPwd").addEventListener("click", async () => {
           resetAutoLock(logout);
         
           const website = document.getElementById("websiteInput").value.trim();
@@ -103,6 +65,16 @@ const init = async () => {
           await saveToStorage("vaultEntries", allEntries);
         
           renderPasswords(allEntries);
+
+          document.getElementById("websiteInput").value = "";
+          document.getElementById("usernameInput").value = "";
+          document.getElementById("passwordInput").value = "";
+
+          const msg = document.createElement("div");
+          msg.textContent = "Password added!";
+          msg.classList.add("add-confirmation");
+          vaultDiv.insertBefore(msg, passwordsListDiv);
+          setTimeout(() => msg.remove(), 1500);
         });
 
         // add search functionality
@@ -159,6 +131,35 @@ function renderPasswords(entries){
       document.getElementById(`decrypted-${idx}`).textContent = `Decrypted: ${decrypted}`;
     });
   });
+}
+
+// Master password creation
+async function setupMasterPassword() {
+  const newPassword = document.getElementById("newPassword").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  if (newPassword.length < 6) {
+    setupError.textContent = "Password must be at least 6 characters.";
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    setupError.textContent = "Error: Passwords don't match!";
+    return;
+  }
+
+  const salt = await genSalt();
+  derivedKey = await hashPW(confirmPassword, salt);
+  const rawKey = await crypto.subtle.exportKey("raw", derivedKey);
+  const encodedKey = btoa(String.fromCharCode(...new Uint8Array(rawKey)));
+
+  await saveToStorage("salt", salt);
+  await saveToStorage("masterPassword", encodedKey);
+
+  setupError.textContent = "";
+  setupDiv.classList.add("hidden");
+
+  await initializeVault();
 }
 
 document.addEventListener('DOMContentLoaded', init);
