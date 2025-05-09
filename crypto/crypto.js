@@ -50,7 +50,7 @@ export async function encryptData(data, key){
 
     // init vector and encrypted data encoded in base64 to store
     return {
-        iv: btoa(String.fromCharCode(...iv)),
+        iv: btoa(String.fromCharCode(...init_v)),
         data: btoa(String.fromCharCode(...new Uint8Array(ciphertext)))
     };
 }
