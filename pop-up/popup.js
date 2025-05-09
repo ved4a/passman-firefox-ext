@@ -28,70 +28,7 @@ const init = async () => {
     document.getElementById("setPasswordBtn").addEventListener("click", () => setupMasterPassword());
   } else {
     loginDiv.classList.remove('hidden');
-
-    document.getElementById("loginBtn").addEventListener("click", async function () {
-      const enteredPW = document.getElementById("loginPassword").value;
-      const storedHashPassword = await getFromStorage("masterPassword");
-
-      derivedKey = await hashPW(enteredPW, salt);
-      const rawKey = await crypto.subtle.exportKey("raw", derivedKey);
-      const encodedKey = btoa(String.fromCharCode(...new Uint8Array(rawKey)));
-
-      if (encodedKey == storedHashPassword){
-        loginDiv.classList.add("hidden");
-        vaultDiv.classList.remove("hidden");
-
-        // begin 10-min auto-lock timer
-        startAutoLock(logout);
-
-        // render all passwords
-        allEntries = await getFromStorage("vaultEntries") || [];
-        renderPasswords(allEntries);
-
-        // add password functionality
-        document.getElementById("addPwd").addEventListener("click", async () => {
-          resetAutoLock(logout);
-        
-          const website = document.getElementById("websiteInput").value.trim();
-          const username = document.getElementById("usernameInput").value.trim();
-          const password = document.getElementById("passwordInput").value;
-        
-          if (!website || !username || !password) return;
-        
-          const encrypted = await encryptData(password, derivedKey);
-          const newEntry = { website, username, password: encrypted };
-        
-          allEntries.push(newEntry);
-          await saveToStorage("vaultEntries", allEntries);
-        
-          renderPasswords(allEntries);
-
-          document.getElementById("websiteInput").value = "";
-          document.getElementById("usernameInput").value = "";
-          document.getElementById("passwordInput").value = "";
-
-          const msg = document.createElement("div");
-          msg.textContent = "Password added!";
-          msg.classList.add("add-confirmation");
-          vaultDiv.insertBefore(msg, passwordsListDiv);
-          setTimeout(() => msg.remove(), 1500);
-        });
-
-        // add search functionality
-        searchInput.addEventListener("keypress", (e) => {
-          if (e.key === "Enter") {
-            const term = searchInput.value.toLowerCase();
-            const filtered = allEntries.filter(entry =>
-              entry.website.toLowerCase().includes(term)
-            );
-            renderPasswords(filtered);
-          }
-        });              
-
-      } else {
-        loginError.textContent = "Incorrect password.";
-      }
-    })
+    document.getElementById("loginBtn").addEventListener("click", () => loginWithPassword(salt));
   }
 };
 
@@ -160,6 +97,24 @@ async function setupMasterPassword() {
   setupDiv.classList.add("hidden");
 
   await initializeVault();
+}
+
+// Login functionality
+async function loginWithPassword(salt) {
+  const enteredPW = document.getElementById("loginPassword").value;
+  const storedHash = await getFromStorage("masterPassword");
+
+  derivedKey = await hashPW(enteredPW, salt);
+  const rawKey = await crypto.subtle.exportKey("raw", derivedKey);
+  const encodedKey = btoa(String.fromCharCode(...new Uint8Array(rawKey)));
+
+  if (encodedKey === storedHash) {
+    loginError.textContent = "";
+    loginDiv.classList.add("hidden");
+    await initializeVault();
+  } else {
+    loginError.textContent = "Incorrect password.";
+  }
 }
 
 document.addEventListener('DOMContentLoaded', init);
