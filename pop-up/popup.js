@@ -19,8 +19,6 @@ let allEntries = [];
 
 const init = async () => {
   console.log('Init function started!');
-
-  // check if salt is in storage -> means there exists a vault
   const salt = await getFromStorage("salt");
 
   if (!salt){
@@ -33,42 +31,11 @@ const init = async () => {
   document.getElementById("logoutBtn").addEventListener("click", logout);
 };
 
+// Logout button
 function logout(){
   vaultDiv.classList.add("hidden");
   loginDiv.classList.remove("hidden");
   document.getElementById("loginPassword").value = "";
-}
-
-document.getElementById("logoutBtn").addEventListener("click", logout);
-
-function renderPasswords(entries){
-  const container = document.getElementById("passwordsList");
-  container.innerHTML = "";
-
-  entries.forEach((entry, index) => {
-    const item = document.createElement("div");
-    item.classList.add("vault-item");
-
-    item.innerHTML = `
-      <strong>${entry.website}</strong><br/>
-      User: ${entry.username}<br/>
-      Encrypted PW: <code>${entry.password.data}</code><br/>
-      <button data-index="${index}" class="decryptBtn">Decrypt</button>
-      <span class="decrypted-pw" id="decrypted-${index}"></span>
-    `;
-
-    container.appendChild(item);
-  });
-
-  container.querySelectorAll(".decryptBtn").forEach(btn => {
-    btn.addEventListener("click", async (e) => {
-      resetAutoLock(logout);
-
-      const idx = e.target.dataset.index;
-      const decrypted = await decryptData(allEntries[idx].password, derivedKey);
-      document.getElementById(`decrypted-${idx}`).textContent = `Decrypted: ${decrypted}`;
-    });
-  });
 }
 
 // Master password creation
@@ -161,6 +128,35 @@ async function initializeVault() {
       );
       renderPasswords(filtered);
     }
+  });
+}
+
+// Render password list
+function renderPasswords(entries) {
+  passwordsListDiv.innerHTML = "";
+
+  entries.forEach((entry, index) => {
+    const item = document.createElement("div");
+    item.classList.add("vault-item");
+
+    item.innerHTML = `
+      <strong>${entry.website}</strong><br/>
+      User: ${entry.username}<br/>
+      Encrypted PW: <code>${entry.password.data}</code><br/>
+      <button data-index="${index}" class="decryptBtn">Decrypt</button>
+      <span class="decrypted-pw" id="decrypted-${index}"></span>
+    `;
+
+    passwordsListDiv.appendChild(item);
+  });
+
+  passwordsListDiv.querySelectorAll(".decryptBtn").forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+      resetAutoLock(logout);
+      const idx = e.target.dataset.index;
+      const decrypted = await decryptData(allEntries[idx].password, derivedKey);
+      document.getElementById(`decrypted-${idx}`).textContent = `Decrypted: ${decrypted}`;
+    });
   });
 }
 
