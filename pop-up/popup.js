@@ -136,24 +136,41 @@ function renderPasswords(entries) {
     const item = document.createElement("div");
     item.classList.add("vault-item");
 
-    item.innerHTML = `
-      <strong>${entry.website}</strong><br/>
-      User: ${entry.username}<br/>
-      Encrypted PW: <code>${entry.password.data}</code><br/>
-      <button data-index="${index}" class="decryptBtn">Decrypt</button>
-      <span class="decrypted-pw" id="decrypted-${index}"></span>
-    `;
+    const website = document.createElement("strong");
+    website.textContent = entry.website;
+
+    const user = document.createElement("div");
+    user.textContent = `User: ${entry.username}`;
+
+    const encrypted = document.createElement("code");
+    encrypted.textContent = entry.password.data;
+
+    const decryptBtn = document.createElement("button");
+    decryptBtn.classList.add("decryptBtn");
+    decryptBtn.dataset.index = index;
+    decryptBtn.textContent = "Decrypt";
+
+    const decryptedSpan = document.createElement("span");
+    decryptedSpan.classList.add("decrypted-pw");
+    decryptedSpan.id = `decrypted-${index}`;
+
+    decryptBtn.addEventListener("click", async () => {
+      resetAutoLock(logout);
+      const decrypted = await decryptData(allEntries[index].password, derivedKey);
+      decryptedSpan.textContent = `Decrypted: ${decrypted}`;
+    });
+
+    item.appendChild(website);
+    item.appendChild(document.createElement("br"));
+    item.appendChild(user);
+    item.appendChild(document.createElement("br"));
+    item.appendChild(document.createTextNode("Encrypted PW: "));
+    item.appendChild(encrypted);
+    item.appendChild(document.createElement("br"));
+    item.appendChild(decryptBtn);
+    item.appendChild(decryptedSpan);
 
     passwordsListDiv.appendChild(item);
-  });
-
-  passwordsListDiv.querySelectorAll(".decryptBtn").forEach(btn => {
-    btn.addEventListener("click", async (e) => {
-      resetAutoLock(logout);
-      const idx = e.target.dataset.index;
-      const decrypted = await decryptData(allEntries[idx].password, derivedKey);
-      document.getElementById(`decrypted-${idx}`).textContent = `Decrypted: ${decrypted}`;
-    });
   });
 }
 
