@@ -23,12 +23,9 @@ const init = async () => {
 
   if (!salt){
     setupDiv.classList.remove('hidden');
-    document.getElementById("setPasswordBtn").addEventListener("click", () => setupMasterPassword());
   } else {
     loginDiv.classList.remove('hidden');
-    document.getElementById("loginBtn").addEventListener("click", () => loginWithPassword(salt));
   }
-  document.getElementById("logoutBtn").addEventListener("click", logout);
 };
 
 // Logout button
@@ -160,4 +157,27 @@ function renderPasswords(entries) {
   });
 }
 
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+  init();
+
+  // Set Master Pw
+  const setPasswordBtn = document.getElementById("setPasswordBtn");
+  if (setPasswordBtn) {
+    setPasswordBtn.addEventListener("click", setupMasterPassword);
+  }
+
+  // Login handler
+  const loginBtn = document.getElementById("loginBtn");
+  if (loginBtn) {
+    loginBtn.addEventListener("click", async () => {
+      const salt = await getFromStorage("salt");
+      if (salt) await loginWithPassword(salt);
+    });
+  }
+
+  // Logout handler
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", logout);
+  }
+});
