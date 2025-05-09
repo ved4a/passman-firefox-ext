@@ -30,6 +30,7 @@ const init = async () => {
     loginDiv.classList.remove('hidden');
     document.getElementById("loginBtn").addEventListener("click", () => loginWithPassword(salt));
   }
+  document.getElementById("logoutBtn").addEventListener("click", logout);
 };
 
 function logout(){
